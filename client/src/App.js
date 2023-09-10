@@ -11,7 +11,7 @@ function App() {
 
  
    return (
-    <div className="bg-black glass">
+    <div className="h-screen bg-black glass">
       <Navbar />
         <SetUsername />
         <Dashboard />
