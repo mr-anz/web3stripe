@@ -31,9 +31,6 @@ const CreateRequest = () => {
       onSuccess(data) {
         setHistory(data)
       },
-      onError(error) {
-        alert("Error", error);
-      },
     });
 
     const { refetch: refetchRequests } = useContractRead({
@@ -44,15 +41,12 @@ const CreateRequest = () => {
       onSuccess(data) {
         setRequests(data)
       },
-      onError(error) {
-        alert("Error", error);
-      },
     });
 
 
     const handleSubmit = async (e) => {
+      e.preventDefault()
       if(account){
-        e.preventDefault()
         if (!user || !amount || !message) return
         await write()         
         onClose()
@@ -159,7 +153,7 @@ const CreateRequest = () => {
           text-white font-medium text-md leading-tight
           rounded-full shadow-md hover:bg-green-700 mt-5"
         >
-          Submit Project
+          Submit 
         </button>
       </form>
     </div>

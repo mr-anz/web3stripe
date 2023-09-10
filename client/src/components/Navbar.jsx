@@ -1,11 +1,15 @@
-
-import { Web3Button } from '@web3modal/react'
+import { useConnect, useAccount, useDisconnect,  useBalance, useContractRead } from 'wagmi'
 import { useStateContext } from '../context'
-import { useAccount, useBalance, useContractRead } from 'wagmi'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 
 const Navbar = () => {
   const {account, setAccount, balance, setName, contractAddress, contractAbi, setBalance} = useStateContext()
   const { address } = useAccount()
+
+  const { connect } = useConnect({
+    connector: new MetaMaskConnector(),
+  })
+  const { disconnect } = useDisconnect()
   setAccount(address)
 
   const { data: myName } = useContractRead({
@@ -14,12 +18,24 @@ const Navbar = () => {
     functionName: 'getMyName',
     args: [account]
  })
-setName(myName?.name)
+  setName(myName?.name)
 
   const { data } = useBalance({
     address : account
   })
   setBalance(data)
+
+  const handleDisconnect = async(e) => {
+    e.preventDefault()
+    await disconnect()
+    setAccount('')
+  }
+
+  const handleClick = async(e) => {
+    e.preventDefault()
+    await connect()
+    setAccount(address) 
+  }
 
   return (
   <div className="navbar z-50 bg-[#b6e810] glass rounded-sm">
@@ -45,8 +61,11 @@ setName(myName?.name)
         <li><a>Wallet</a></li>
       </ul>
     </div>
-    <div className="navbar-end ">
-      <Web3Button/>
+    <div className="navbar-end p-1">
+      {account ?
+        ( <button className="btn bg-[#11ade6] opacity-40 glass" onClick={handleDisconnect} >{account?.slice(0,4) + '....' + account?.slice(38)}</button> ):
+        ( <button className="btn  bg-[#11ade6]  glass"  onClick={handleClick}>Connect Wallet</button>)
+      } 
     </div>
   </div>
   )

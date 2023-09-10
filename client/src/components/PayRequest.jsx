@@ -43,9 +43,6 @@ const PayRequest = () => {
       onSuccess(data) {
         setHistory(data)
       },
-      onError(error) {
-        alert("Error", error);
-      },
     });
 
     const { refetch: refetchRequests } = useContractRead({
@@ -56,17 +53,14 @@ const PayRequest = () => {
       onSuccess(data) {
         setRequests(data)
       },
-      onError(error) {
-        alert("Error", error);
-      },
     });
     
 
 
 
     const handleSubmit = async(e) => {
+      e.preventDefault()
       if(account){
-        e.preventDefault()
         await write()   
         onClose()
       } else{
@@ -76,8 +70,8 @@ const PayRequest = () => {
     }
 
     const handleClick = async(e) => {
+      e.preventDefault()
       if(account){
-        e.preventDefault()
         await reject()
         onClose()
       } else{

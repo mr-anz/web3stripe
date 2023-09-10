@@ -3,34 +3,38 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
-import { CreateContext } from './context';
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
-import { Web3Modal } from '@web3modal/react'
+import { publicProvider } from 'wagmi/providers/public'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { hardhat, localhost, polygonMumbai } from 'wagmi/chains'
+import { polygonMumbai } from 'wagmi/chains'
+import { CreateContext } from './context';
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 
-const chains = [hardhat, localhost, polygonMumbai]
-const projectId = '773f292c5af82bc599bb1b9b79965462'
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
-const wagmiConfig = createConfig({
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [polygonMumbai],
+  [alchemyProvider({ apiKey: '6g7MzPYfqmCroVbaqsrVtqIrWFbBwkOG' }), publicProvider()],
+)
+
+const config = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
-  publicClient
-})
-const ethereumClient = new EthereumClient(wagmiConfig, chains)
+  connectors: [
+    new MetaMaskConnector({ chains }),
 
+  ],
+  publicClient,
+  webSocketPublicClient,
+})
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <WagmiConfig config={wagmiConfig}>
-    <CreateContext>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </CreateContext>
+    <WagmiConfig config={config}>
+      <CreateContext>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </CreateContext>
     </WagmiConfig>
-    <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
   </React.StrictMode>
 );

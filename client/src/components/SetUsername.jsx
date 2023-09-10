@@ -29,15 +29,12 @@ const SetUsername = () => {
       onSuccess(data) {
         setName(data.name)
       },
-      onError(error) {
-        alert("Error", error);
-      },
     });
 
  
     const handleSubmit = async (e) => {
+      e.preventDefault()
       if(account){
-        e.preventDefault()
         if (!username) return
         await write()
         onClose()
@@ -108,7 +105,7 @@ const SetUsername = () => {
           text-white font-medium text-md leading-tight
           rounded-full shadow-md hover:bg-green-700 mt-5"
         >
-          Submit Project
+          Submit 
         </button>
       </form>
     </div>
